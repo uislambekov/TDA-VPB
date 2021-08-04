@@ -1,5 +1,5 @@
-if (!("TDAstats" %in% rownames(installed.packages()))) install.packages("TDA") # install TDA package if it is not installed
-library(TDAstats) # load TDA package
+if (!("TDAstats" %in% rownames(installed.packages()))) install.packages("TDAstats") # install TDAstats package if it is not installed
+library(TDAstats) # load TDAstats package
 
 VPB = function(D,dimension,xSeq=NULL,ySeq,tau){
       # D - N by 3 matrix (columns contain dimension, birth and persistence values respectively)
