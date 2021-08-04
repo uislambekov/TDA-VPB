@@ -1,16 +1,16 @@
 if (!("TDAstats" %in% rownames(installed.packages()))) install.packages("TDA") # install TDA package if it is not installed
 library(TDAstats) # load TDA package
 
-VPB = function(D,dimension,xSeq=NULL,ySeq,alpha){
+VPB = function(D,dimension,xSeq=NULL,ySeq,tau){
       # D - N by 3 matrix (columns contain dimension, birth and persistence values respectively)
       # dimension - homological dimension (0 for H0, 1 for H1, etc.)
       # xSeq - sequence of x (birth) values of the grid vertices
       # ySeq - sequence of y (persistence) values of the grid vertices
-      # alpha - parameter (between 0 and 1) controlling block width 
+      # tau - parameter (between 0 and 1) controlling block width 
       ##############
       vectorize1D <- function(c,d,D){
         y <- D[,2] # vector of persistence values
-        lambda <- alpha*y # vector of (block widths)/2
+        lambda <- tau*y # vector of (block widths)/2
         yMin <- pmax(c,y-lambda)
         yMax <- pmin(d,y+lambda)
         B <- pmax(0,yMax-yMin)
@@ -20,7 +20,7 @@ VPB = function(D,dimension,xSeq=NULL,ySeq,alpha){
       vectorize2D <- function(a,b,c,d,D){
         x <- D[,1] # vector of birth values 
         y <- D[,2] # vector of persistence values
-        lambda <- alpha*y # vector of (block widths)/2
+        lambda <- tau*y # vector of (block widths)/2
         xMin <- pmax(a,x-lambda)
         xMax <- pmin(b,x+lambda)
         yMin <- pmax(c,y-lambda)
@@ -69,5 +69,5 @@ colnames(D)[3] <- "Persistence"
 xSeq <- seq(0,0.5,by=0.1) # sequence of x (birth) values of the grid vertices
 ySeq <- seq(0,2,by=0.25) # sequence of y (persistence) values of the grid vertices
 
-VPB(D,dimension = 0,ySeq=ySeq,alpha = 0.5) # compute VPB for homological dimension H0 and alpha=0.5
-VPB(D,dimension = 1,xSeq=xSeq,ySeq=ySeq,alpha = 0.5) # compute VPB for homological dimension H1 and alpha=0.5
+VPB(D,dimension = 0,ySeq=ySeq,tau = 0.5) # compute VPB for homological dimension H0 and tau=0.5
+VPB(D,dimension = 1,xSeq=xSeq,ySeq=ySeq,tau = 0.5) # compute VPB for homological dimension H1 and tau=0.5
