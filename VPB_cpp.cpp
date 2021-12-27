@@ -2,7 +2,6 @@
 #include <iostream>
 using namespace Rcpp;
 
-// [[Rcpp::export]]
 IntegerVector which_C(LogicalVector vec) {
   std::vector<int> outC;
   for(int i=0; i<vec.size(); ++i) {
@@ -45,15 +44,15 @@ NumericVector VPB_C(NumericMatrix D_, int dimension, NumericVector xSeq, Numeric
     for(int i=0; i<m; ++i) {
       double c = ySeq[i];
       double d = ySeq[i+1];
-      IntegerVector yInd = which_C( (y > c - lambda) & (y < d+lambda) );
-      if( yInd.size()>0) {
-        NumericVector y_cd = y[yInd];
-        NumericVector lambda_cd = lambda[yInd];
-        NumericVector yMin = pmax(c,y_cd-lambda_cd);
-        NumericVector yMax = pmin(d,y_cd+lambda_cd);
-        vpb[i] = 0.5*sum(yMax*yMax-yMin*yMin)/dy[i] ;
-      }  else {
-        vpb[i] = 0;
+      vpb[i] = 0;
+      for(int ie=0; ie<y.size(); ++ie) {
+        if( (y[ie] > c - lambda[ie]) & (y[ie] < d+lambda[ie])) {
+          double y_cd_ = y[ie];
+          double lambda_cd_ = lambda[ie];
+          double yMin_ = std::max(c, y_cd_ - lambda_cd_);
+          double yMax_ = std::min(d, y_cd_ + lambda_cd_);
+          vpb[i] += 0.5*(yMax_*yMax_-yMin_*yMin_)/dy[i] ;
+        }
       }
     }
     return NumericVector(vpb.begin(), vpb.end());
@@ -96,7 +95,6 @@ NumericVector VPB_C(NumericMatrix D_, int dimension, NumericVector xSeq, Numeric
 }
 
 
-// [[Rcpp::export]]
 NumericVector VPB_C_fast(NumericMatrix D_, int dimension, NumericVector xSeq, NumericVector ySeq,
                     double tau) {
   //  D <- D[D[, 1] == dimension, 2:3, drop = F]
